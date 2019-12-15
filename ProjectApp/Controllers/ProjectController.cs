@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CreateData.DTO;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -22,23 +23,45 @@ namespace ProjectApp.Controllers
             _context = context;
             _logger = logger;
         }
+        //////////////////////////////////////////////////////////////////////////////
         [HttpGet]
         public string GetHome()
         {
             return "hello";
         }
-
-
-        [HttpGet("projects/{code}")]
-        public ActionResult<ProjectItem> GetProjects(string code) // Mia lista apo auto to interface
+        /////////////////////////////////////////////////////////////////////////////
+        [HttpGet("load_projects")]
+        public string GetProjectsToDB()
         {
-            return _context.GetDataProjects(code);
+            return _context.LoadProjectsToDB();
+        }
+        [HttpGet("load_packagesasking")]
+        public string GetPackagesToDB()
+        {
+            return _context.LoadPackageItemAskingToDB();
+        }
+        [HttpGet("load_packagesreceiving")] // den tikalw akoma!!!
+        public string GetPackagesReceivingToDB()
+        {
+            return _context.LoadPackageItemReceivedToDB();
+        }
+        [HttpGet("load_fundings")]
+        public string GetFundingsToDB()
+        {
+            return _context.LoadFundingsToDB();
+        }
+        [HttpGet("load_users")]
+        public string GetUsersToDB()
+        {
+            return _context.LoadUsersToDB();
         }
 
+        
+        //////////////////////////////////////////// LOAD ///////////////////////////
         [HttpGet("projects")]
         public IEnumerable<ProjectItem> GetDataProject()
         {
-            return _context.GetData();
+            return _context.GetDataProject();
         }
         [HttpGet("users")]
         public IEnumerable<User> GetDataUser()
@@ -51,85 +74,130 @@ namespace ProjectApp.Controllers
             return _context.GetDataFunding();
         }
         [HttpGet("packages")]
-        public IEnumerable<PackageItem> GetDataPackage()
+        public IEnumerable<PackageItemAsking> GetDataPackage()
         {
             return _context.GetDataPackage();
         }
-        //////////////////////////////////////////// LOAD 
-        [HttpGet("load_projects")]
-        public void GetProjectsToDB()
-        {
-            _context.LoadProjectsToDB();
-        }
-        [HttpGet("load_packages")]
-        public void GetPackagesToDB()
-        {
-            _context.LoadPackagesToDB();
-        }
-        [HttpGet("load_fundings")]
-        public void GetFundingsToDB()
-        {
-            _context.LoadFundingsToDB();
-        }
-        [HttpGet("load_users")]
-        public void GetUsersToDB()
-        {
-            _context.LoadUsersToDB();
-        }
-        //////////////////////////////////////////// LOAD 
-        [HttpGet("all projects")] // emfanizei ola ta projects apo database
-        public List<ProjectItem> GetProjects() // 
+
+ ////////////////////////////////////////////////////// LOAD //////////////////////////////////////////////////////////////////////////
+
+        [HttpGet("all_projects")] // emfanizei ola ta projects apo database
+        public List<ProjectItem> GetProjects()
         {
             return _context.GetAllProjects();
         }
+
         [HttpGet("projectcode/{code}")] // search in database by code
-        public ActionResult<ProjectItem> GetProjectByCode(string code) // 
+        public ActionResult<ProjectItem> GetProjectByCode(string code)
         {
             return _context.GetDataProjectByCode(code);
         }
+
         [HttpGet("projectyear/{year}")] // search in database by year
-        public ActionResult<ProjectItem> GetProjects(int year) // 
+        public ActionResult<ProjectItem> GetProjectsByYear(int year)
         {
             return _context.GetDataProjectByYear(year);
         }
+
         [HttpGet("projecttitle/{title}")] // search in database by title
         public ActionResult<ProjectItem> GetProjectsByTitle(string title)
         {
             return _context.GetDataProjectByTitle(title);
         }
+
         [HttpGet("projectcreator/{usercode}")] // search in database by creator
-        public List<ProjectItem> GetProjectsByCreator(string usercode)
+        public List<ProjectItem> GetProjectsByCreator(string creatorname)
         {
-            return _context.GetDataProjectsByCreator(usercode);
+            return _context.GetDataProjectByCreator(creatorname);
         }
-        [HttpGet("all users")] // returns all users
-        public List<User> GetAllUsers()
+
+        [HttpPut("update_project")] // to put einai gia update // sto path de hreiazetai na grafw to agents, vazw tis times tou kathena
+        public string UpdateProj(ProjectItem project)
         {
-            return _context.GetDataUsers();
+            return _context.UpdateProject(project);
         }
-        [HttpGet("total fund")]
-        public double TotalFundOfAProject(ProjectItem p)
-        {
-            return _context.TotalFundOfOneProject(p);
-        }
-        [HttpPost("project")]
+
+        [HttpPost("add_project")]
         public string SetProject(ProjectItem p)
         {
-            _context.AddProject(p);
-            return "project has been added !";
+            return _context.AddProject(p);
         }
-        [HttpPut("project/{description}")] // to put einai gia update // sto path de hreiazetai na grafw to agents, vazw tis times tou kathena
-        public string SetProjectsDescription(string description)
+
+        [HttpGet("funded_projects")]
+        public string GetDataProjectsFunding(User user)
         {
-            string result = _context.UpdateProjectByDescription(description);
-            return result;
+            return _context.GetProjectsFunding(user);
         }
-        [HttpPut("project/{title}")] // to put einai gia update // sto path de hreiazetai na grafw to agents, vazw tis times tou kathena
-        public string SetProjectsTitle(string title)
+
+        [HttpPut("projectoff")] // to put einai gia update // sto path de hreiazetai na grafw to agents, vazw tis times tou kathena
+        public string InactivatedProject(ProjectItem p)
         {
-            string result = _context.UpdateProjectByTitle(title);
+            string result = _context.InactiveProject(p);
             return result;
         }
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        
+        [HttpGet("fillin creations")]
+        public string GetCreations()
+        {
+            return _context.FillingCreatios();
+        }
+
+        [HttpGet("creators")] 
+        public List<User> GetCreatorsUsers()
+        {
+            return _context.GetCreators();
+        }
+
+        [HttpPost("login")]
+        public User Login(User u)
+        {
+           return  _context.Login(u.Username, u.Password);
+            
+        }
+
+        [HttpPost("logout")]
+        public string LogOut(User u)
+        {
+            return _context.Logout(u.Username, u.Password);
+
+        }
+
+        [HttpPost("add_user")] 
+        public string SignUp(User user)
+        {
+            _context.AddUser(user);
+            return "User has been added !";
+        }
+
+     /*   
+        [HttpGet("creations")]
+        public ActionResult GetCreatorProjects(User user)
+        {
+            return _context.GetCreatorProjects(user);
+        }
+*/
+
+ ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        [HttpPost("add_project_funding")]
+        public string AddFund(FundingDTO fund)
+        {
+            return _context.AddFund(fund);
+        }
+       
+        [HttpPut("total_asking_funds")]
+        public double TotalAskingFundsOfAProject(ProjectItem p)
+        {
+            return _context.GetTotalAskingFunds(p);
+        }
+
+        [HttpPut("total_received_funds")]
+        public double TotalReceivedFundsOfAProject(ProjectItem p)
+        {
+            return _context.GetTotalReceivingFunds(p);
+        }
     }
 }

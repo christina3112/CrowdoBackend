@@ -44,9 +44,9 @@ namespace CreateData
                 NumberOfPackages = Convert.ToInt32(fundingDTO.NumberOfPackages)
             };
         }
-        public static PackageItem ConvertPackageFromDto(PackageDTO packageDTO)
+        public static PackageItemAsking ConvertPackageFromDto(PackageDTO packageDTO)
         {
-            return new PackageItem
+            return new PackageItemAsking
             {
                 PackageCode = packageDTO.PackageCode,//den einai ths klashs einai tou antikeimenou
                 Title = packageDTO.Title,

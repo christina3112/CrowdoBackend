@@ -5,7 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EntityFramework" Version="6.4.0" />
+    <Compile Remove="Migrations\20191212162822_Crowdo.cs" />
+    <Compile Remove="Migrations\20191212162822_Crowdo.Designer.cs" />
+    <Compile Remove="Migrations\20191213112325_Crowdo.cs" />
+    <Compile Remove="Migrations\20191213112325_Crowdo.Designer.cs" />
+    <Compile Remove="Migrations\20191213113719_Crowdo.cs" />
+    <Compile Remove="Migrations\20191213113719_Crowdo.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Design" Version="1.1.6" />
@@ -17,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CreateData\CreateData.csproj" />
     <ProjectReference Include="..\Entities\Entities.csproj" />
   </ItemGroup>
 

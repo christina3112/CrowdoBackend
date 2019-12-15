@@ -18,7 +18,7 @@ namespace CreateData
         {
             List<User> Users = new List<User>();
             XSSFWorkbook hssfwb;
-            using (FileStream file = new FileStream(@"C:\Users\Christina\Desktop\demodataForCrowdo.xlsx",
+            using (FileStream file = new FileStream(@"C:\Users\User-SL\Documents\Training\demodataForCrowdo.xlsx",
                 FileMode.Open,
                 FileAccess.Read))
             {
@@ -58,7 +58,7 @@ namespace CreateData
         {
             List<ProjectItem> Projects = new List<ProjectItem>();
             XSSFWorkbook hssfwb;
-            using (FileStream file = new FileStream(@"C:\Users\Christina\Desktop\demodataForCrowdo.xlsx",
+            using (FileStream file = new FileStream(@"C:\Users\User-SL\Documents\Training\demodataForCrowdo.xlsx",
                 FileMode.Open,
                 FileAccess.Read))
             {
@@ -98,7 +98,7 @@ namespace CreateData
         {
             List<Funding> Fundings = new List<Funding>();
             XSSFWorkbook hssfwb;
-            using (FileStream file = new FileStream(@"C:\Users\Christina\Desktop\demodataForCrowdo.xlsx",
+            using (FileStream file = new FileStream(@"C:\Users\User-SL\Documents\Training\demodataForCrowdo.xlsx",
                 FileMode.Open,
                 FileAccess.Read))
             {
@@ -130,11 +130,11 @@ namespace CreateData
             return Fundings;
             ////////PANTA TRY CATCH SE OLES TIS ME8ODOUS
         }
-        public static List<PackageItem> LoadFromXlPackages(string pathPackages) // SHEET PACKAGES
+        public static List<PackageItemAsking> LoadFromXlPackages(string pathPackages) // SHEET PACKAGES
         {
-            List<PackageItem> Packages = new List<PackageItem>();
+            List<PackageItemAsking> Packages = new List<PackageItemAsking>();
             XSSFWorkbook hssfwb;
-            using (FileStream file = new FileStream(@"C:\Users\Christina\Desktop\demodataForCrowdo.xlsx",
+            using (FileStream file = new FileStream(@"C:\Users\User-SL\Documents\Training\demodataForCrowdo.xlsx",
                 FileMode.Open,
                 FileAccess.Read))
             {
@@ -153,7 +153,7 @@ namespace CreateData
                         Details = sheet.GetRow(row).GetCell(3).StringCellValue,
                         Rewards = sheet.GetRow(row).GetCell(4).StringCellValue
                     };
-                    PackageItem packageItem = new PackageItem();
+                    PackageItemAsking packageItem = new PackageItemAsking();
                     packageItem = Converter.ConvertPackageFromDto(packagedto);
                     Packages.Add(packageItem);
                 }

@@ -10,8 +10,8 @@ using ProjectApp.Database;
 namespace ProjectApp.Migrations
 {
     [DbContext(typeof(CrowDoDB))]
-    [Migration("20191211125031_CrowDo")]
-    partial class CrowDo
+    [Migration("20191213114142_Crowdo")]
+    partial class Crowdo
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,17 +37,27 @@ namespace ProjectApp.Migrations
                     b.Property<string>("ProjectCode")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ProjectItemId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserCode")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("FundingId");
+
+                    b.HasIndex("ProjectItemId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Fundings");
                 });
 
-            modelBuilder.Entity("Entities.PackageItem", b =>
+            modelBuilder.Entity("Entities.PackageItemAsking", b =>
                 {
-                    b.Property<int>("PackageItemId")
+                    b.Property<int>("PackageItemAskingId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -61,15 +71,50 @@ namespace ProjectApp.Migrations
                     b.Property<string>("PackageCode")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ProjectItemId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Rewards")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("PackageItemId");
+                    b.HasKey("PackageItemAskingId");
 
-                    b.ToTable("Packages");
+                    b.HasIndex("ProjectItemId");
+
+                    b.ToTable("PackagesAsking");
+                });
+
+            modelBuilder.Entity("Entities.PackageItemReceived", b =>
+                {
+                    b.Property<int>("PackageItemReceivedId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateReceived")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("PackageItemAskingId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProjectItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PackageItemReceivedId");
+
+                    b.HasIndex("PackageItemAskingId");
+
+                    b.HasIndex("ProjectItemId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PackagesReceived");
                 });
 
             modelBuilder.Entity("Entities.ProjectItem", b =>
@@ -97,26 +142,15 @@ namespace ProjectApp.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("TotalAskingFunds")
-                        .HasColumnType("float");
-
-                    b.Property<double>("TotalReceivingFunds")
-                        .HasColumnType("float");
-
                     b.Property<string>("UserCode")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId1")
-                        .HasColumnType("int");
-
                     b.HasKey("ProjectItemId");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("Projects");
                 });
@@ -137,6 +171,9 @@ namespace ProjectApp.Migrations
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
                     b.Property<string>("UserCode")
                         .HasColumnType("nvarchar(max)");
 
@@ -148,15 +185,44 @@ namespace ProjectApp.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Entities.Funding", b =>
+                {
+                    b.HasOne("Entities.ProjectItem", "ProjectItem")
+                        .WithMany()
+                        .HasForeignKey("ProjectItemId");
+
+                    b.HasOne("Entities.User", "User")
+                        .WithMany("ProjectFunding")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("Entities.PackageItemAsking", b =>
+                {
+                    b.HasOne("Entities.ProjectItem", null)
+                        .WithMany("PackagesAsking")
+                        .HasForeignKey("ProjectItemId");
+                });
+
+            modelBuilder.Entity("Entities.PackageItemReceived", b =>
+                {
+                    b.HasOne("Entities.PackageItemAsking", "PackageItemAsking")
+                        .WithMany()
+                        .HasForeignKey("PackageItemAskingId");
+
+                    b.HasOne("Entities.ProjectItem", "ProjectItem")
+                        .WithMany("PackagesReceived")
+                        .HasForeignKey("ProjectItemId");
+
+                    b.HasOne("Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("Entities.ProjectItem", b =>
                 {
-                    b.HasOne("Entities.User", null)
+                    b.HasOne("Entities.User", "User")
                         .WithMany("ProjectCreations")
                         .HasForeignKey("UserId");
-
-                    b.HasOne("Entities.User", null)
-                        .WithMany("ProjectFunding")
-                        .HasForeignKey("UserId1");
                 });
 #pragma warning restore 612, 618
         }
