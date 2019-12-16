@@ -94,7 +94,7 @@ namespace ProjectApp.Controllers
         }
 
         [HttpGet("projectyear/{year}")] // search in database by year
-        public ActionResult<ProjectItem> GetProjectsByYear(int year)
+        public List<ProjectItem> GetProjectsByYear(int year)
         {
             return _context.GetDataProjectByYear(year);
         }
@@ -105,10 +105,10 @@ namespace ProjectApp.Controllers
             return _context.GetDataProjectByTitle(title);
         }
 
-        [HttpGet("projectcreator/{usercode}")] // search in database by creator
-        public List<ProjectItem> GetProjectsByCreator(string creatorname)
+        [HttpGet("projectcreator/{name}")] // search in database by creator
+        public List<ProjectItem> GetProjectsByCreator(string name)
         {
-            return _context.GetDataProjectByCreator(creatorname);
+            return _context.GetDataProjectByCreator(name);
         }
 
         [HttpPut("update_project")] // to put einai gia update // sto path de hreiazetai na grafw to agents, vazw tis times tou kathena
@@ -139,16 +139,22 @@ namespace ProjectApp.Controllers
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         
-        [HttpGet("fillin creations")]
-        public string GetCreations()
+        /*[HttpGet("fillin creations")]
+        public List<ProjectItem> GetCreations()
         {
             return _context.FillingCreatios();
-        }
+        }*/
 
         [HttpGet("creators")] 
         public List<User> GetCreatorsUsers()
         {
             return _context.GetCreators();
+        }
+
+        [HttpGet("creations/{usercode}")]
+        public List<ProjectItem> GetCreatorProjects(string usercode)
+        {
+            return _context.GetCreations(usercode);
         }
 
         [HttpPost("login")]
@@ -158,12 +164,6 @@ namespace ProjectApp.Controllers
             
         }
 
-        [HttpPost("logout")]
-        public string LogOut(User u)
-        {
-            return _context.Logout(u.Username, u.Password);
-
-        }
 
         [HttpPost("add_user")] 
         public string SignUp(User user)
@@ -172,15 +172,7 @@ namespace ProjectApp.Controllers
             return "User has been added !";
         }
 
-     /*   
-        [HttpGet("creations")]
-        public ActionResult GetCreatorProjects(User user)
-        {
-            return _context.GetCreatorProjects(user);
-        }
-*/
-
- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [HttpPost("add_project_funding")]
         public string AddFund(FundingDTO fund)

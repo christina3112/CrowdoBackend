@@ -202,18 +202,12 @@ namespace ProjectApp.Services
  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         public string AddProject(ProjectItem project) // na kalw tin add 
         {
-           // if (project.User.Status == true) de douleuei ! 
-            //{
-                using (var db = new CrowDoDB())
-                {
-                    db.Projects.Add(project);
-                    //AddCreation(project.User, project);
-                    FillingCreatios();
-                    db.SaveChanges();
-                }
-                return "project added";
-            //}
-           // else return "You are not logged in";
+            using (var db = new CrowDoDB())
+            {
+                 db.Projects.Add(project);
+                 db.SaveChanges();
+            }
+            return "project added";
         }
         public List<ProjectItem> GetAllProjects()
         {
@@ -229,11 +223,11 @@ namespace ProjectApp.Services
                 return db.Projects.Where(item => item.ProjectCode.Equals(code)).FirstOrDefault();
             }
         }
-        public ProjectItem GetDataProjectByYear(int year) // search by year
+        public List<ProjectItem> GetDataProjectByYear(int year) // search by year
         {
             using (var db = new CrowDoDB())
             {
-                return db.Projects.Where(item => item.StartDate.Year.Equals(year)).FirstOrDefault();
+                return db.Projects.Where(item => item.StartDate.Year.Equals(year)).ToList();
             }
         }
         public ProjectItem GetDataProjectByTitle(string title) // search by title
@@ -247,7 +241,9 @@ namespace ProjectApp.Services
         {
             using (var db = new CrowDoDB())
             {
-                return db.Projects.Where(item => item.User.Name.Equals(name)).ToList();
+                List<ProjectItem> projects = db.Projects.Where(item => item.User.Name.Equals(name)).ToList();
+                return projects;
+           
             }
         }
         
@@ -298,18 +294,13 @@ namespace ProjectApp.Services
             }
         }
 
-        public string Logout(string username, string password)
+        public void AddUser(User user) // sign up 
         {
             using (var db = new CrowDoDB())
             {
-                User user = db.Users.Where(u => u.Username.Equals(username) && u.Password.Equals(password)).First();
-                if (user != null)
-                {
-                    user.Status = false;
-                    db.SaveChanges();
-                    return "You log out ! ";
-                }
-                else return null;
+                user.Status = true;
+                db.Users.Add(user);
+                db.SaveChanges();
             }
         }
 
@@ -317,17 +308,22 @@ namespace ProjectApp.Services
         {
             using (var db = new CrowDoDB())
             {
-                List<User> users = db.Users.ToList();
-                List<User> creators = new List<User>();
-                foreach (var user in users)
-                {
-                   creators.Add(user);
-                }
-                db.SaveChanges();
+                List<User> creators = db.Users.Include(u=> u.ProjectCreations).ToList();
                 return creators;
             }
         }
-        public string AddCreation(User user, ProjectItem p)
+
+        public List<ProjectItem> GetCreations (string usercode) // NA TH GEMISW
+        {
+            using (var db = new CrowDoDB())
+            {
+                User x = db.Users.Where(us => us.UserCode == usercode).Include(us=>us.ProjectCreations).First();
+                 
+                return x.ProjectCreations;
+            }
+        }
+
+        /*public string AddCreation(User user, ProjectItem p)
         {
             //if (user.Status == true)
             //{
@@ -341,12 +337,12 @@ namespace ProjectApp.Services
            // else return "You are not logged in";
         }
 
-        public string FillingCreatios() // gurizei olous tous users
+        public List<ProjectItem> FillingCreatios() // gurizei olous tous users
         {
             using (var db = new CrowDoDB())
             {
                 List<User> users = db.Users.ToList();
-                //List<ProjectItem> projects = db.Projects.ToList();
+
                 foreach (var user in users)
                 {
                     List<ProjectItem> proj = db.Projects.Where(item => item.UserCode.Equals(user.UserCode)).ToList();
@@ -354,30 +350,22 @@ namespace ProjectApp.Services
                     {
                         foreach (var project in proj)
                         {
-                            AddCreation(user, project);
+                            user.ProjectCreations.Add(project);
                         }
+                        proj.Clear();
+                        return user.ProjectCreations;
 
                     }
-                    else return "this user is not a creator !";
-
+                    else return null;
                 }
                 db.SaveChanges();
-                return "Existing creations updated ! ";
-            }
-            
-        }
 
-        public void AddUser(User user) // sign up 
-        {
-            using (var db = new CrowDoDB())
-            {
-                user.Status = true;
-                db.Users.Add(user);
-                db.SaveChanges();
             }
-        }
-       
+
+        }*/
+
  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
         public string AddFund(FundingDTO fund)
         {
             using (var db = new CrowDoDB())
@@ -393,7 +381,9 @@ namespace ProjectApp.Services
                     User = user,
                     ProjectItem = projectItem,
                     PackageCode = fund.PackageCode,
-                    NumberOfPackages = 1
+                    NumberOfPackages = 1,
+                    ProjectCode = fund.ProjectCode,
+                    UserCode = fund.UserCode
                 };
                 db.Fundings.Add(fundEnt);
                 db.SaveChanges();
@@ -429,13 +419,13 @@ namespace ProjectApp.Services
                 string values1 = p.NumberOfRequestedPackages;
                 string[] tokens1 = values1.Split(',');
                 int[] noOfRequestedPacks = Array.ConvertAll<string, int>(tokens1, int.Parse);
-                string values2 = p.PackageCode;
+                string values2 = p.PackageCode.ToUpper();
                 string[] tokens2 = values2.Split(',');
                 int[] costs = new int[tokens2.Length];
                 List<PackageItemAsking> packages = db.PackagesAsking.ToList();
                 for (int i = 0; i < tokens2.Length; i++)
                 {
-                    PackageItemAsking package = packages.Where(pack => pack.PackageCode.Equals(tokens2[i])).First();
+                    PackageItemAsking package = packages.Where(pack => pack.PackageCode.Equals(tokens2[i].Trim())).First();
                     if (package == null)
                     {
                         Console.WriteLine("The pack was not found");
@@ -445,9 +435,10 @@ namespace ProjectApp.Services
                     result += costs[i] * noOfRequestedPacks[i];
                 }
             }
-            Console.WriteLine("Total Fund is ", result);
-            return result;
+            p.TotalAskingFunds = result;
+            return p.TotalAskingFunds;
         }
+
         public double GetTotalReceivingFunds(ProjectItem p)
         {
             double result = 0.00;
@@ -456,7 +447,7 @@ namespace ProjectApp.Services
                 string values1 = p.NumberOfRequestedPackages;
                 string[] tokens1 = values1.Split(',');
                 int[] noOfRequestedPacks = Array.ConvertAll<string, int>(tokens1, int.Parse);
-                string values2 = p.PackageCode;
+                string values2 = p.PackageCode.ToUpper();
                 string[] tokens2 = values2.Split(',');
                 int[] costs = new int[tokens2.Length];
                 var packages = db.PackagesReceived
@@ -464,7 +455,7 @@ namespace ProjectApp.Services
                     .Select(i => new { i.PackageItemAsking }).ToList();
                 for (int i = 0; i < tokens2.Length; i++)
                 {
-                    var package = packages.Where(pack => pack.PackageItemAsking.PackageCode.Equals(tokens2[i])).First();
+                    var package = packages.Where(pack => pack.PackageItemAsking.PackageCode.Equals(tokens2[i].Trim())).First();
                     if (package == null)
                     {
                         Console.WriteLine("The pack was not found");

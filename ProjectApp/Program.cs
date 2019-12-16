@@ -29,8 +29,8 @@ namespace ProjectApp
                 NumberOfRequestedPackages = "10,20,5"
             };
 
-            //double total = data.TotalFundOfOneProject(proj);
-            //Console.WriteLine($"the total is : {total}");
+            /*double total = data.GetTotalReceivingFunds(proj);
+            Console.WriteLine($"the total is : {total}");*/
             CreateHostBuilder(args).Build().Run();
 
         }
