@@ -38,7 +38,9 @@ namespace ProjectApp.Migrations
                     PackageCode = table.Column<string>(nullable: true),
                     NumberOfRequestedPackages = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
-                    UserId = table.Column<int>(nullable: true)
+                    UserId = table.Column<int>(nullable: true),
+                    TotalAskingFunds = table.Column<double>(nullable: false),
+                    TotalReceivingFunds = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {

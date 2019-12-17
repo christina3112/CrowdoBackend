@@ -11,6 +11,8 @@
     <Compile Remove="Migrations\20191213112325_Crowdo.Designer.cs" />
     <Compile Remove="Migrations\20191213113719_Crowdo.cs" />
     <Compile Remove="Migrations\20191213113719_Crowdo.Designer.cs" />
+    <Compile Remove="Migrations\20191213114142_Crowdo.cs" />
+    <Compile Remove="Migrations\20191213114142_Crowdo.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -36,9 +36,9 @@ namespace Entities
         public int? UserId { get; set; }
         public User User { get; set; } // to user pou tha einai eite backer eite creator(pou mporei na nai kai backer)
 
-        [NotMapped]
+        
         public double TotalAskingFunds { get; set; }
-        [NotMapped]
+       
         public double TotalReceivingFunds { get; set; }
         public List<PackageItemAsking> PackagesAsking { get; set; }
         public List<PackageItemReceived> PackagesReceived { get; set; }

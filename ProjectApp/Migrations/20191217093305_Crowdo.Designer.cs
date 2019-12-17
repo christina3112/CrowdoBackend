@@ -10,7 +10,7 @@ using ProjectApp.Database;
 namespace ProjectApp.Migrations
 {
     [DbContext(typeof(CrowDoDB))]
-    [Migration("20191213114142_Crowdo")]
+    [Migration("20191217093305_Crowdo")]
     partial class Crowdo
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -141,6 +141,12 @@ namespace ProjectApp.Migrations
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("TotalAskingFunds")
+                        .HasColumnType("float");
+
+                    b.Property<double>("TotalReceivingFunds")
+                        .HasColumnType("float");
 
                     b.Property<string>("UserCode")
                         .HasColumnType("nvarchar(max)");

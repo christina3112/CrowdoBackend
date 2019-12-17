@@ -23,7 +23,7 @@ namespace ProjectApp.Controllers
             _context = context;
             _logger = logger;
         }
-        //////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         [HttpGet]
         public string GetHome()
         {
@@ -40,7 +40,7 @@ namespace ProjectApp.Controllers
         {
             return _context.LoadPackageItemAskingToDB();
         }
-        [HttpGet("load_packagesreceiving")] // den tikalw akoma!!!
+        [HttpGet("load_packagesreceiving")] // 
         public string GetPackagesReceivingToDB()
         {
             return _context.LoadPackageItemReceivedToDB();
@@ -57,7 +57,7 @@ namespace ProjectApp.Controllers
         }
 
         
-        //////////////////////////////////////////// LOAD ///////////////////////////
+        //////////////////////////////////////////// LOAD //////////////////////////////////////////////////////////////////////////////////////
         [HttpGet("projects")]
         public IEnumerable<ProjectItem> GetDataProject()
         {
@@ -81,37 +81,37 @@ namespace ProjectApp.Controllers
 
  ////////////////////////////////////////////////////// LOAD //////////////////////////////////////////////////////////////////////////
 
-        [HttpGet("all_projects")] // emfanizei ola ta projects apo database
+        [HttpGet("all_projects")] // 
         public List<ProjectItem> GetProjects()
         {
             return _context.GetAllProjects();
         }
 
-        [HttpGet("projectcode/{code}")] // search in database by code
+        [HttpGet("projectcode/{code}")] // 
         public ActionResult<ProjectItem> GetProjectByCode(string code)
         {
             return _context.GetDataProjectByCode(code);
         }
 
-        [HttpGet("projectyear/{year}")] // search in database by year
+        [HttpGet("projectyear/{year}")] // 
         public List<ProjectItem> GetProjectsByYear(int year)
         {
             return _context.GetDataProjectByYear(year);
         }
 
-        [HttpGet("projecttitle/{title}")] // search in database by title
+        [HttpGet("projecttitle/{title}")] // 
         public ActionResult<ProjectItem> GetProjectsByTitle(string title)
         {
             return _context.GetDataProjectByTitle(title);
         }
 
-        [HttpGet("projectcreator/{name}")] // search in database by creator
+        [HttpGet("projectcreator/{name}")] // 
         public List<ProjectItem> GetProjectsByCreator(string name)
         {
             return _context.GetDataProjectByCreator(name);
         }
 
-        [HttpPut("update_project")] // to put einai gia update // sto path de hreiazetai na grafw to agents, vazw tis times tou kathena
+        [HttpPut("update_project")] // 
         public string UpdateProj(ProjectItem project)
         {
             return _context.UpdateProject(project);
@@ -129,7 +129,7 @@ namespace ProjectApp.Controllers
             return _context.GetProjectsFunding(user);
         }
 
-        [HttpPut("projectoff")] // to put einai gia update // sto path de hreiazetai na grafw to agents, vazw tis times tou kathena
+        [HttpPut("projectoff")] // 
         public string InactivatedProject(ProjectItem p)
         {
             string result = _context.InactiveProject(p);
@@ -137,13 +137,6 @@ namespace ProjectApp.Controllers
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        
-        /*[HttpGet("fillin creations")]
-        public List<ProjectItem> GetCreations()
-        {
-            return _context.FillingCreatios();
-        }*/
 
         [HttpGet("creators")] 
         public List<User> GetCreatorsUsers()
@@ -180,16 +173,16 @@ namespace ProjectApp.Controllers
             return _context.AddFund(fund);
         }
        
-        [HttpPut("total_asking_funds")]
-        public double TotalAskingFundsOfAProject(ProjectItem p)
+        [HttpGet("total_asking_funds/{projectcode}")]
+        public double TotalAskingFundsOfAProject(string projectcode)
         {
-            return _context.GetTotalAskingFunds(p);
+            return _context.GetTotalAskingFunds(projectcode);
         }
 
-        [HttpPut("total_received_funds")]
-        public double TotalReceivedFundsOfAProject(ProjectItem p)
+        [HttpGet("total_received_funds/{projectcode}")]
+        public double TotalReceivedFundsOfAProject(string projectcode)
         {
-            return _context.GetTotalReceivingFunds(p);
+            return _context.GetTotalReceivingFunds(projectcode);
         }
     }
 }

@@ -114,7 +114,7 @@ namespace CreateData
                         UserCode = sheet.GetRow(row).GetCell(0).StringCellValue,
                         ProjectCode = sheet.GetRow(row).GetCell(1).StringCellValue,
                         PackageCode = sheet.GetRow(row).GetCell(2).StringCellValue,
-                        NumberOfPackages = sheet.GetRow(row).GetCell(3).NumericCellValue
+                        NumberOfPackages = sheet.GetRow(row).GetCell(3).NumericCellValue // vazei double
                     };
                     Funding funding = new Funding();
                     funding = Converter.ConvertFundingFromDto(fundingdto);

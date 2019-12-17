@@ -20,7 +20,7 @@ namespace ProjectApp.Services
             Projects projects = new Projects();
             using (StreamReader r = new StreamReader(filepath))
             {
-                string json = r.ReadToEnd(); // diavazw to json arheio kai vazw mesa 
+                string json = r.ReadToEnd(); 
                 projects.ProjectList = JsonConvert.DeserializeObject<List<ProjectItem>>(json);
             }
             return projects.ProjectList;
@@ -58,18 +58,18 @@ namespace ProjectApp.Services
             }
             return packages.PackageAskingList; // 
         }
-        ////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public string LoadProjectsToDB() // FORTWNOUME STH VASH TO KATHE ENTITY KAI EXOUME MIA LOAD GIA KATHE PINAKA
+        public string LoadProjectsToDB() // 
         {
             string filepath = @"C:\Users\User-SL\OneDrive\Υπολογιστής\projects.json";
             Projects projects = new Projects(); // 
             using (StreamReader r = new StreamReader(filepath))
             {
-                string json = r.ReadToEnd(); // diavazw to json arheio kai vazw mesa 
+                string json = r.ReadToEnd(); // 
                 projects.ProjectList = JsonConvert.DeserializeObject<List<ProjectItem>>(json); // 
             }
-            using (var db = new CrowDoDB()) // gia na kanei automata to dispose
+            using (var db = new CrowDoDB()) // 
             {
                 projects.ProjectList.ForEach(project =>
                 {
@@ -84,7 +84,7 @@ namespace ProjectApp.Services
 
                 });
 
-                db.SaveChanges(); // Kanei insert sti db kai to vazoume MONO otan grafei
+                db.SaveChanges(); // 
             }
             return "data transfered";
         }
@@ -97,10 +97,10 @@ namespace ProjectApp.Services
                 string json = r.ReadToEnd(); // 
                 packages.PackageAskingList = JsonConvert.DeserializeObject<List<PackageItemAsking>>(json); // 
             }
-            using (var db = new CrowDoDB()) // gia na kanei automata to dispose
+            using (var db = new CrowDoDB()) //
             {
                 db.PackagesAsking.AddRange(packages.PackageAskingList);
-                db.SaveChanges(); // Kanei insert sti db kai to vazoume MONO otan grafei
+                db.SaveChanges(); // 
             }
             return "data transfered";
         }
@@ -152,10 +152,10 @@ namespace ProjectApp.Services
                 string json = r.ReadToEnd(); // 
                 fundings.FundingList = JsonConvert.DeserializeObject<List<Funding>>(json); // 
             }
-            using (var db = new CrowDoDB()) // gia na kanei automata to dispose
+            using (var db = new CrowDoDB()) //
             {
                 fundings.FundingList.ForEach(funding =>
-                { // FK project item
+                { // 
 
                     string projectcode = funding.ProjectCode;
                     ProjectItem project = db.Projects.Where(p => p.ProjectCode.Equals(projectcode)).First();
@@ -166,7 +166,7 @@ namespace ProjectApp.Services
                     }
 
                 });
-                fundings.FundingList.ForEach(funding => // gia to FK tou user
+                fundings.FundingList.ForEach(funding => // 
                 {
 
                     string usercode = funding.UserCode;
@@ -192,10 +192,10 @@ namespace ProjectApp.Services
                 string json = r.ReadToEnd(); // 
                 users.UserList = JsonConvert.DeserializeObject<List<User>>(json); // 
             }
-            using (var db = new CrowDoDB()) // gia na kanei automata to dispose
+            using (var db = new CrowDoDB()) // 
             {
                 db.Users.AddRange(users.UserList);
-                db.SaveChanges(); // Kanei insert sti db kai to vazoume MONO otan grafei
+                db.SaveChanges(); // 
             }
             return "data transfered";
         }
@@ -206,6 +206,7 @@ namespace ProjectApp.Services
             {
                  db.Projects.Add(project);
                  db.SaveChanges();
+                 GetTotalAskingFunds(project.ProjectCode);
             }
             return "project added";
         }
@@ -216,28 +217,28 @@ namespace ProjectApp.Services
                 return db.Projects.ToList();
             }
         }
-        public ProjectItem GetDataProjectByCode(string code) // na gurizei to project me sugkekrimeno code
+        public ProjectItem GetDataProjectByCode(string code) // 
         {
             using (var db = new CrowDoDB())
             {
                 return db.Projects.Where(item => item.ProjectCode.Equals(code)).FirstOrDefault();
             }
         }
-        public List<ProjectItem> GetDataProjectByYear(int year) // search by year
+        public List<ProjectItem> GetDataProjectByYear(int year) // 
         {
             using (var db = new CrowDoDB())
             {
                 return db.Projects.Where(item => item.StartDate.Year.Equals(year)).ToList();
             }
         }
-        public ProjectItem GetDataProjectByTitle(string title) // search by title
+        public ProjectItem GetDataProjectByTitle(string title) // 
         {
             using (var db = new CrowDoDB())
             {
                 return db.Projects.Where(item => item.Title.Equals(title)).FirstOrDefault();
             }
         }
-        public List<ProjectItem> GetDataProjectByCreator(string name) // epistrefei ta projects searched by creator
+        public List<ProjectItem> GetDataProjectByCreator(string name) // 
         {
             using (var db = new CrowDoDB())
             {
@@ -304,7 +305,7 @@ namespace ProjectApp.Services
             }
         }
 
-        public List<User> GetCreators() // NA TH GEMISW
+        public List<User> GetCreators() // 
         {
             using (var db = new CrowDoDB())
             {
@@ -313,7 +314,7 @@ namespace ProjectApp.Services
             }
         }
 
-        public List<ProjectItem> GetCreations (string usercode) // NA TH GEMISW
+        public List<ProjectItem> GetCreations (string usercode) //
         {
             using (var db = new CrowDoDB())
             {
@@ -323,46 +324,7 @@ namespace ProjectApp.Services
             }
         }
 
-        /*public string AddCreation(User user, ProjectItem p)
-        {
-            //if (user.Status == true)
-            //{
-                using (var db = new CrowDoDB())
-                {
-                    user.ProjectCreations.Add(p);
-                    db.SaveChanges();
-                }
-                return "Project added to your creations";
-            //}
-           // else return "You are not logged in";
-        }
-
-        public List<ProjectItem> FillingCreatios() // gurizei olous tous users
-        {
-            using (var db = new CrowDoDB())
-            {
-                List<User> users = db.Users.ToList();
-
-                foreach (var user in users)
-                {
-                    List<ProjectItem> proj = db.Projects.Where(item => item.UserCode.Equals(user.UserCode)).ToList();
-                    if (!proj.Equals(null))
-                    {
-                        foreach (var project in proj)
-                        {
-                            user.ProjectCreations.Add(project);
-                        }
-                        proj.Clear();
-                        return user.ProjectCreations;
-
-                    }
-                    else return null;
-                }
-                db.SaveChanges();
-
-            }
-
-        }*/
+        
 
  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         
@@ -385,9 +347,16 @@ namespace ProjectApp.Services
                     ProjectCode = fund.ProjectCode,
                     UserCode = fund.UserCode
                 };
-                db.Fundings.Add(fundEnt);
-                db.SaveChanges();
-                return "You have now funded a new Project";
+
+                double totalFund = p.Cost + projectItem.TotalReceivingFunds;
+                if (totalFund <= projectItem.TotalAskingFunds)
+                {
+                    projectItem.TotalReceivingFunds = totalFund;
+                    db.Fundings.Add(fundEnt);
+                    db.SaveChanges();
+                    return "You have funded a new Project";
+                }
+                else return "This Project is maxed out on Funds";
             }
         }
         public dynamic GetProjectsFunding(User user)
@@ -399,23 +368,16 @@ namespace ProjectApp.Services
             }
         }
         
-      /*  public dynamic GetCreatorProjects(User user)
-        {
-            using (var db = new CrowDoDB())
-            {
-                return db.Users.Where(u => u.UserCode.Equals(user.UserCode))
-                    .Select(i => new { i.ProjectCreations }).ToList();
-            }
-        }
-*/
+      
  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         
-        public double GetTotalAskingFunds(ProjectItem p)
+        public double GetTotalAskingFunds(string projectcode)
         {
             double result = 0.00;
-            using (var db = new CrowDoDB()) // sto front tha vazei auta pou thelei
+            using (var db = new CrowDoDB()) //
             {
+                ProjectItem p = db.Projects.Where(item => item.ProjectCode.Equals(projectcode)).First();
                 string values1 = p.NumberOfRequestedPackages;
                 string[] tokens1 = values1.Split(',');
                 int[] noOfRequestedPacks = Array.ConvertAll<string, int>(tokens1, int.Parse);
@@ -434,39 +396,32 @@ namespace ProjectApp.Services
                     costs[i] = package.Cost;
                     result += costs[i] * noOfRequestedPacks[i];
                 }
+                p.TotalAskingFunds = result;
+                db.SaveChanges();
             }
-            p.TotalAskingFunds = result;
-            return p.TotalAskingFunds;
+            return result;
         }
 
-        public double GetTotalReceivingFunds(ProjectItem p)
+        public double GetTotalReceivingFunds(string projectcode)
         {
             double result = 0.00;
             using (var db = new CrowDoDB())
             {
-                string values1 = p.NumberOfRequestedPackages;
-                string[] tokens1 = values1.Split(',');
-                int[] noOfRequestedPacks = Array.ConvertAll<string, int>(tokens1, int.Parse);
-                string values2 = p.PackageCode.ToUpper();
-                string[] tokens2 = values2.Split(',');
-                int[] costs = new int[tokens2.Length];
-                var packages = db.PackagesReceived
-                    .Include(i => i.PackageItemAsking)
-                    .Select(i => new { i.PackageItemAsking }).ToList();
-                for (int i = 0; i < tokens2.Length; i++)
+                ProjectItem p = db.Projects.Where(item => item.ProjectCode.Equals(projectcode)).First();
+                List<Funding> projectFundings = db.Fundings
+                    .Where(item => item.ProjectCode
+                .Equals(projectcode)).ToList();
+                foreach (var projectFunding in projectFundings)
                 {
-                    var package = packages.Where(pack => pack.PackageItemAsking.PackageCode.Equals(tokens2[i].Trim())).First();
-                    if (package == null)
-                    {
-                        Console.WriteLine("The pack was not found");
-                        continue;
-                    }
-                    costs[i] = package.PackageItemAsking.Cost;
-                    result += costs[i] * noOfRequestedPacks[i];
+                    var packagecode = projectFunding.PackageCode;
+                    var package = db.PackagesAsking.Where(p => p.PackageCode.Equals(packagecode)).First();
+                    int number = projectFunding.NumberOfPackages;
+                    result += package.Cost * number;
                 }
+                p.TotalReceivingFunds = result;
+                db.SaveChanges();
+                return result;
             }
-            Console.WriteLine("Total Fund is ", result);
-            return result;
         }
 
 

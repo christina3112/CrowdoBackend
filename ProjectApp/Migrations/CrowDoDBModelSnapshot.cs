@@ -140,6 +140,12 @@ namespace ProjectApp.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("TotalAskingFunds")
+                        .HasColumnType("float");
+
+                    b.Property<double>("TotalReceivingFunds")
+                        .HasColumnType("float");
+
                     b.Property<string>("UserCode")
                         .HasColumnType("nvarchar(max)");
 
