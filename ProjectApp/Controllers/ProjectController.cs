@@ -172,7 +172,13 @@ namespace ProjectApp.Controllers
         {
             return _context.AddFund(fund);
         }
-       
+
+        [HttpGet("myfundings/{usercode}")]
+        public List<Funding> MyFundings(string usercode)
+        {
+            return _context.GetMyFundings(usercode);
+        }
+
         [HttpGet("total_asking_funds/{projectcode}")]
         public double TotalAskingFundsOfAProject(string projectcode)
         {

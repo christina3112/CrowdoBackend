@@ -359,6 +359,15 @@ namespace ProjectApp.Services
                 else return "This Project is maxed out on Funds";
             }
         }
+        public List<Funding> GetMyFundings(string usercode)
+        {
+            using (var db = new CrowDoDB())
+            {
+                List<Funding> userFundings = db.Fundings.Where(f => f.UserCode.Equals(usercode)).ToList();
+                return userFundings;
+            }
+        }
+
         public dynamic GetProjectsFunding(User user)
         {
             using (var db = new CrowDoDB())
